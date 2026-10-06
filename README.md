@@ -1,14 +1,25 @@
 # Iris Flower Classification
 
-An end-to-end Machine Learning pipeline that predicts the species of Iris flowers (**Setosa**, **Versicolor**, or **Virginica**) based on four continuous physical measurements: sepal length, sepal width, petal length, and petal width.
+An end-to-end Machine Learning pipeline and real-time interactive web application that predicts the species of Iris flowers (**Setosa**, **Versicolor**, or **Virginica**) based on four continuous physical measurements: sepal length, sepal width, petal length, and petal width.
+
+---
+
+## 🌐 Application Access & URLs
+
+- **Local Application URL**: **[http://localhost:5000](http://localhost:5000)** (or **[http://127.0.0.1:5000](http://127.0.0.1:5000)**)
+- **GitHub Repository**: **[https://github.com/Ratanyadav9867/IRIS-FLOWER-PRIDICTION](https://github.com/Ratanyadav9867/IRIS-FLOWER-PRIDICTION)**
 
 ---
 
 ## Table of Contents
+- [Application Access & URLs](#-application-access--urls)
 - [Project Overview](#project-overview)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [How to Set Up and Run](#how-to-set-up-and-run)
+  - [1. Launching the Interactive Web Application](#1-launching-the-interactive-web-application)
+  - [2. Launching the Jupyter Notebook](#2-launching-the-jupyter-notebook)
+- [REST API Reference](#rest-api-reference)
 - [Exploratory Data Analysis & Visualizations](#exploratory-data-analysis--visualizations)
 - [Modeling & Results Summary](#modeling--results-summary)
 - [Inference Demo](#inference-demo)
@@ -18,13 +29,15 @@ An end-to-end Machine Learning pipeline that predicts the species of Iris flower
 
 ## Project Overview
 
-The Iris Flower Classification dataset is a foundational benchmark in botanical classification and pattern recognition, originally introduced by statistician and biologist Ronald Fisher in 1936. The objective of this project is to explore the underlying distribution of morphological measurements, determine feature discriminative power, train multiple supervised machine learning models, evaluate them without data leakage, and select the optimal model for inference.
+The Iris Flower Classification dataset is a foundational benchmark in botanical classification and pattern recognition, originally introduced by statistician and biologist Ronald Fisher in 1936. The objective of this project is to explore the underlying distribution of morphological measurements, determine feature discriminative power, train multiple supervised machine learning models, evaluate them without data leakage, select the optimal model for inference, and deliver a production-ready, interactive web interface.
 
 ---
 
 ## Tech Stack
 
 - **Language**: Python 3.13+
+- **Web Backend & REST API**: [Flask](https://flask.palletsprojects.com/)
+- **Frontend & UI**: Vanilla HTML5, Vanilla CSS3 (Dark Glassmorphic Theme), Vanilla JavaScript (Real-time live inference)
 - **Data Manipulation**: [NumPy](https://numpy.org/), [Pandas](https://pandas.pydata.org/)
 - **Data Visualization**: [Matplotlib](https://matplotlib.org/), [Seaborn](https://seaborn.pydata.org/)
 - **Machine Learning**: [Scikit-Learn](https://scikit-learn.org/) (Data preprocessing, feature selection, classifiers, cross-validation pipelines, evaluation metrics)
@@ -39,8 +52,15 @@ The Iris Flower Classification dataset is a foundational benchmark in botanical 
 IRIS FLOWER CLASSIFICATION/
 ├── .venv/                      # Local Python virtual environment
 ├── requirements.txt            # Pinned package dependencies
+├── app.py                      # Flask web server & prediction REST API
+├── templates/
+│   └── index.html              # Modern interactive dashboard template
+├── static/
+│   ├── style.css               # Dark glassmorphic design system
+│   └── app.js                  # Real-time slider events and API integration
 ├── iris_classification.ipynb   # Complete analysis, visualization, and modeling notebook
 ├── iris_best_model.joblib      # Serialized inference pipeline (StandardScaler + KNN)
+├── .gitignore                  # Git exclusion rules
 └── README.md                   # Comprehensive project documentation
 ```
 
@@ -52,7 +72,12 @@ IRIS FLOWER CLASSIFICATION/
 Ensure Python 3.10+ is installed on your operating system.
 
 ### 2. Virtual Environment Setup
-Clone or navigate to the project directory, then create and activate a virtual environment:
+Clone the repository and create an isolated virtual environment:
+
+```bash
+git clone https://github.com/Ratanyadav9867/IRIS-FLOWER-PRIDICTION.git
+cd IRIS-FLOWER-PRIDICTION
+```
 
 **Windows (PowerShell):**
 ```powershell
@@ -72,18 +97,71 @@ Install all required libraries specified in `requirements.txt`:
 pip install -r requirements.txt
 ```
 
-### 4. Register Jupyter Kernel
-Register the virtual environment as an isolated Jupyter kernel:
+---
+
+### 1. Launching the Interactive Web Application
+
+Run the Flask server:
 ```bash
-python -m ipykernel install --user --name iris-env --display-name "iris-env"
+python app.py
 ```
 
-### 5. Launch the Notebook
-Open and run the notebook:
+Once started, open your web browser and navigate to:
+👉 **[http://localhost:5000](http://localhost:5000)** (or `http://127.0.0.1:5000`)
+
+**Interactive Features**:
+- 🎚️ **Live Sliders**: Slide Sepal Length, Sepal Width, Petal Length, or Petal Width to trigger real-time predictions.
+- 🌸 **Quick Presets**: One-click test buttons for typical *Setosa*, *Versicolor*, and *Virginica* profiles.
+- 📊 **Animated Meters**: Visual probability progress bars and species glow themes.
+
+---
+
+### 2. Launching the Jupyter Notebook
+
+Register the kernel and open Jupyter:
 ```bash
+python -m ipykernel install --user --name iris-env --display-name "iris-env"
 jupyter notebook iris_classification.ipynb
 ```
 Select the **`iris-env`** kernel when prompted.
+
+---
+
+## REST API Reference
+
+The web application exposes a high-performance REST endpoint for programmatic inference:
+
+### `POST /api/predict`
+
+**Request Headers**:
+```http
+Content-Type: application/json
+```
+
+**Request Body Example**:
+```json
+{
+  "sepal_length": 5.1,
+  "sepal_width": 3.5,
+  "petal_length": 1.4,
+  "petal_width": 0.2
+}
+```
+
+**Response Example**:
+```json
+{
+  "confidence": 100.0,
+  "display_name": "Iris Setosa",
+  "predicted_species": "setosa",
+  "probabilities": {
+    "setosa": 100.0,
+    "versicolor": 0.0,
+    "virginica": 0.0
+  },
+  "success": true
+}
+```
 
 ---
 
