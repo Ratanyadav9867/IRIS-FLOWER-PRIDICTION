@@ -11,6 +11,15 @@
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+  <!-- Full-Screen Background Video Component -->
+  {% from "components/background_video.html" import render_background_video %}
+  {{ render_background_video(
+      src="/static/videos/background.mp4",
+      webm_src="/static/videos/background.webm",
+      poster="/static/videos/iris_background_poster.jpg",
+      overlay_opacity=0.45
+  ) }}
+
   <div class="ambient-glow glow-1"></div>
   <div class="ambient-glow glow-2"></div>
 

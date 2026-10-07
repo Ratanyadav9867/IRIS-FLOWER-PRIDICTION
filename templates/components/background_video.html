@@ -1,0 +1,50 @@
+{# =============================================================================
+   Reusable Background Video Component (Jinja2 / Flask Template)
+   =============================================================================
+   Props / Arguments:
+   - src: Path to MP4 video source (default: /static/videos/background.mp4)
+   - webm_src: Optional path to WebM video source for modern browser compression
+   - poster: Fallback / initial poster image path (default: /static/videos/iris_background_poster.jpg)
+   - overlay_opacity: Value between 0.0 and 1.0 for dark contrast overlay (default: 0.45)
+   - class_name: Additional custom CSS class names (optional)
+   - mobile_poster_only: If true, stops video loading on narrow mobile screens to save cellular data (default: false)
+#}
+
+{% macro render_background_video(
+    src="/static/videos/background.mp4",
+    webm_src="/static/videos/background.webm",
+    poster="/static/videos/iris_background_poster.jpg",
+    overlay_opacity=0.45,
+    class_name="",
+    mobile_poster_only=false
+) %}
+<div class="bg-video-container {{ class_name }}"
+     data-component="background-video"
+     data-mobile-poster-only="{{ 'true' if mobile_poster_only else 'false' }}"
+     style="--bg-video-overlay-opacity: {{ overlay_opacity }}; background-image: url('{{ poster }}');"
+     aria-hidden="true"
+     role="presentation">
+
+  <video
+    class="bg-video-element"
+    autoplay
+    loop
+    muted
+    playsinline
+    webkit-playsinline
+    preload="metadata"
+    poster="{{ poster }}">
+    {% if webm_src %}
+    <source src="{{ webm_src }}" type="video/webm">
+    {% endif %}
+    {% if src %}
+    <source src="{{ src }}" type="video/mp4">
+    {% endif %}
+    <!-- Fallback image tag for older clients -->
+    <img src="{{ poster }}" alt="" class="bg-video-fallback-img" loading="lazy">
+  </video>
+
+  <!-- Adjustable Semi-Transparent Dark Overlay -->
+  <div class="bg-video-overlay"></div>
+</div>
+{% endmacro %}

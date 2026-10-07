@@ -170,7 +170,58 @@ document.addEventListener('DOMContentLoaded', () => {
     handleInputChange();
   }
 
+  // Background Video Performance, Autoplay & Accessibility Controller
+  function initBackgroundVideo() {
+    const videoContainer = document.querySelector('[data-component="background-video"]');
+    if (!videoContainer) return;
+
+    const video = videoContainer.querySelector('.bg-video-element');
+    if (!video) return;
+
+    // Respect user's OS preference for reduced motion
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handleMotion = (e) => {
+      if (e.matches) {
+        video.pause();
+      } else {
+        video.play().catch(() => {});
+      }
+    };
+
+    if (motionQuery.matches) {
+      video.pause();
+    } else {
+      // Check for Network Data-Saver header/mode
+      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      const isDataSaver = connection && (connection.saveData || /2g/.test(connection.effectiveType));
+
+      if (isDataSaver && videoContainer.getAttribute('data-mobile-poster-only') === 'true') {
+        video.pause();
+      } else {
+        // Enforce muted property programmatically for strict browser policies (iOS Safari, Chrome)
+        video.muted = true;
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => {
+            // Autoplay rejected or video file deferred; poster image remains visible
+            console.info('Background video autoplay deferred:', err.message || err);
+          });
+        }
+      }
+    }
+
+    if (motionQuery.addEventListener) {
+      motionQuery.addEventListener('change', handleMotion);
+    }
+
+    // If video fails or isn't loaded yet, keep poster background visible
+    video.addEventListener('error', () => {
+      video.style.display = 'none';
+    });
+  }
+
   // Initial Run
+  initBackgroundVideo();
   updateInputDisplays();
   performInference();
 });
